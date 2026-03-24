@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>登录 - 线索管理系统</title>
+    <style>
+        /* 基础重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 模拟手机屏幕容器 (方便在PC上预览，如果在手机上会自动撑满) */
+        .mobile-container {
+            width: 100%;
+            max-width: 414px; /* iPhone 屏幕宽度参考 */
+            height: 100vh;
+            max-height: 896px;
+            position: relative;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 30px 30px 30px;
+            /* 如果想在PC上看清楚边界，可以取消下面这行注释 */
+            /* border: 1px solid #eaeaea; box-shadow: 0 4px 20px rgba(0,0,0,0.05); */
+        }
+
+        /* 顶部插图区 */
+        .illustration {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            margin-top: 40px;
+        }
+
+        /* 标题 */
+        .title {
+            text-align: center;
+            font-size: 26px;
+            color: #333333;
+            font-weight: 500;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+
+        /* 表单区域 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 输入框容器 */
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #f5f6f8;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            transition: border-color 0.3s ease;
+        }
+
+        /* 选中状态的输入框 (第一项) */
+        .input-wrapper.active {
+            border-color: #3b82f6; /* 蓝色边框 */
+            background-color: #f8fbff;
+        }
+
+        /* 图标 */
+        .input-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            color: #9ca3af;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 输入框本体 */
+        .input-wrapper input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            color: #333333;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #9ca3af;
+        }
+        
+        /* 模拟设计稿中的闪烁光标效果（竖线） */
+        .input-wrapper.active input {
+            border-left: 1px solid #333;
+            padding-left: 2px;
+            margin-left: -3px; /* 抵消padding带来的位移 */
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { border-color: transparent; }
+            50% { border-color: #333; }
+        }
+
+        /* 登录按钮 */
+        .btn-login {
+            width: 100%;
+            background-color: #2b8cff;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 15px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:active {
+            background-color: #1a73e8;
+        }
+
+        /* 底部 iOS Home Indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 130px;
+            height: 5px;
+            background-color: #000000;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    
+    <div class="illustration">
+        <svg width="120" height="100" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="0,0 0,80 120,80" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+            
+            <rect x="20" y="45" width="15" height="35" fill="#9ca3af" rx="2" />
+            <rect x="50" y="28" width="15" height="52" fill="#9ca3af" rx="2" />
+            <rect x="80" y="10" width="15" height="70" fill="#3b82f6" rx="2" />
+            
+            <polyline points="10,55 40,36 70,46 100,-8" fill="none" stroke="#1e293b" stroke-width="2"/>
+            
+            <circle cx="10" cy="55" r="2.5" fill="#1e293b"/>
+            <circle cx="40" cy="36" r="2.5" fill="#1e293b"/>
+            <circle cx="70" cy="46" r="2.5" fill="#1e293b"/>
+            <circle cx="100" cy="-8" r="2.5" fill="#1e293b"/>
+        </svg>
+    </div>
+
+    <h1 class="title">线索管理系统 v1.0</h1>
+
+    <form onsubmit="event.preventDefault();window.location.href='record.html';">
+        
+        <div class="form-group">
+            <div class="input-wrapper active">
+                <div class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <input type="text" placeholder="请输入账号" autocomplete="off" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-wrapper">
+                <div class="input-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <input type="password" placeholder="请输入密码" autocomplete="off" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">登录</button>
+        
+    </form>
+
+    <div class="home-indicator"></div>
+
+</div>
+
+</body>
+</html>

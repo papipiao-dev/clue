@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>提报记录</title>
+    <style>
+        :root {
+            --bg-color: #F8F8F8; --primary-color: #4A90E2; --text-color-title: #000000; 
+            --text-color-body: #666666; --text-color-sub: #999999; --card-bg: #FFFFFF; --purple-color: #9B51E0; 
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --icon-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%239B51E0' d='M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z'%2F%3E%3C/svg%3E");
+            --icon-record: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M19,3H5C3.89,3 3,3.89 3,5V19C3,20.1 3.89,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M7,10H17V12H7V10M7,14H17V16H7V14M7,6H17V8H7V6Z'%2F%3E%3C/svg%3E");
+            --icon-record-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234A90E2' d='M19,3H5C3.89,3 3,3.89 3,5V19C3,20.1 3.89,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M7,10H17V12H7V10M7,14H17V16H7V14M7,6H17V8H7V6Z'%2F%3E%3C/svg%3E");
+            --icon-needs: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M7,13H21V11H7V13M7,17H21V15H7V17M7,9H21V7H7V9M3,8A1,1 0 0,0 2,9A1,1 0 0,0 3,10A1,1 0 0,0 4,9A1,1 0 0,0 3,8M3,12A1,1 0 0,0 2,13A1,1 0 0,0 3,14A1,1 0 0,0 4,13A1,1 0 0,0 3,12M3,16A1,1 0 0,0 2,17A1,1 0 0,0 3,18A1,1 0 0,0 4,17A1,1 0 0,0 3,16Z'%2F%3E%3C/svg%3E");
+            --icon-link: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.53,8.71 19.53,6.81 18.36,5.64C17.19,4.47 15.29,4.47 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,10.59C13.8,10.2 14.44,10.2 14.83,10.59C16.78,12.54 16.78,15.71 14.83,17.76L11.29,21.29C9.34,23.24 6.17,23.24 4.22,21.29C2.27,19.34 2.27,16.17 4.22,14.22L5.71,12.73C5.7,13.54 5.83,14.36 6.11,15.14L5.64,15.61C4.47,16.78 4.47,18.68 5.64,19.85C6.81,21.02 8.71,21.02 9.88,19.85L13.41,16.32C14.59,15.15 14.59,13.25 13.41,12.09C13.02,11.7 13.02,11.06 13.41,10.67L13.41,10.59Z'%2F%3E%3C/svg%3E");
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-stack); background-color: var(--bg-color); color: var(--text-color-body); font-size: 14px; line-height: 1.5; }
+        .app-viewport { width: 100vw; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-color); position: relative;}
+        .main-content { flex: 1; overflow-y: auto; padding: 20px 20px 100px 20px; }
+        .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-color-title); margin-bottom: 20px; }
+        .value-black { color: var(--text-color-title); }
+        .card-list { display: flex; flex-direction: column; gap: 15px; }
+        .card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .card-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .card-header .phone { font-size: 16px; font-weight: 700; color: var(--text-color-title); }
+        .card-header .time-sub { font-size: 12px; color: var(--text-color-body); }
+        .card-body .detail { font-size: 13px; color: var(--text-color-body); line-height: 1.6; margin-bottom: 3px; }
+        .clues-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .clues-header-row h1 { margin-bottom: 0; }
+        .add-clue-btn { display: flex; align-items: center; font-size: 14px; font-weight: 600; color: var(--purple-color); cursor: pointer; }
+        .add-clue-icon { width: 16px; height: 16px; background-image: var(--icon-add); background-size: contain; margin-right: 4px; }
+        .card-clue .status { font-size: 12px; font-weight: 500; }
+        .card-clue .status-pending { color: var(--primary-color); }
+        .card-clue .status-no-need { color: var(--text-color-sub); }
+        .card-clue .card-header { margin-bottom: 12px; }
+        .card-clue .body-row { font-size: 13px; color: var(--text-color-body); margin-bottom: 12px; }
+        .card-clue .body-row:last-child { margin-bottom: 0; }
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
+        .nav-icon { width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain; background-position: center; margin-bottom: 4px; }
+        .nav-text { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: var(--primary-color); }
+        .nav-item-record .nav-icon { background-image: var(--icon-record); }
+        .nav-item-needs .nav-icon { background-image: var(--icon-needs); }
+        .nav-item-short-link .nav-icon { background-image: var(--icon-link); }
+        .nav-item-record.active .nav-icon { background-image: var(--icon-record-active); }
+        .page { display: block; height: 100%; }
+        .modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 999; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); }
+        .modal-box { position: relative; background-color: var(--card-bg); width: 80%; max-width: 320px; border-radius: 12px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .modal-title { font-size: 16px; font-weight: 700; color: var(--text-color-title); text-align: center; margin-bottom: 20px; }
+        .modal-input { width: 100%; padding: 12px; border: 1px solid #E0E0E0; border-radius: 8px; font-size: 14px; color: var(--text-color-title); margin-bottom: 24px; outline: none; }
+        .modal-actions { display: flex; justify-content: space-between; gap: 12px; }
+        .modal-btn { flex: 1; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; cursor: pointer; border: none; }
+        .modal-btn-cancel { background-color: #F5F5F5; color: var(--text-color-body); }
+        .modal-btn-confirm { background-color: var(--primary-color); color: #FFFFFF; }
+        .loading-text { text-align: center; color: var(--text-color-sub); padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="app-viewport">
+        <div class="main-content">
+            <div id="page-submit-record" class="page">
+                <div class="clues-header-row page-header">
+                    <h1>提报记录</h1>
+                    <div class="add-clue-btn" id="open-clue-modal-btn">
+                        <div class="add-clue-icon"></div>
+                        添加线索
+                    </div>
+                </div>
+                <div class="card-list clues-card-list" id="clues-list-container">
+                    <div class="loading-text">正在从 MySQL 拉取数据...</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item nav-item-record active" onclick="window.location.href='record.html'">
+                <div class="nav-icon"></div><div class="nav-text">提报记录</div>
+            </div>
+            <div class="nav-item nav-item-needs" onclick="window.location.href='need.html'">
+                <div class="nav-icon"></div><div class="nav-text">需求列表</div>
+            </div>
+            <div class="nav-item nav-item-short-link" onclick="window.location.href='shortlink.html'">
+                <div class="nav-icon"></div><div class="nav-text">我的短链</div>
+            </div>
+        </nav>
+        
+        <div class="modal" id="add-clue-modal">
+            <div class="modal-overlay" id="modal-overlay"></div>
+            <div class="modal-box">
+                <div class="modal-title">添加线索</div>
+                <input type="tel" class="modal-input" id="clue-phone-input" placeholder="请输入手机号码" maxlength="11">
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-cancel" id="clue-cancel-btn">取消</button>
+                    <button class="modal-btn modal-btn-confirm" id="clue-confirm-btn">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        console.log("【1】网页代码已成功加载！");
+        
+        const API_BASE_URL = 'http://127.0.0.1:8888/api';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("【2】网页元素准备完毕，开始去数据库拉数据...");
+            loadCluesData();
+
+            async function loadCluesData() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/clues`, { headers: { 'Authorization': '1' } });
+                    const result = await response.json();
+                    console.log("【3】成功拿到后端返回的数据：", result);
+                    
+                    const container = document.getElementById('clues-list-container');
+                    if (result.code === 200 && result.data.length > 0) {
+                        container.innerHTML = result.data.map(item => `
+                            <div class="card card-clue">
+                                <div class="card-header">
+                                    <span class="phone">${item.phone}</span>
+                                    <span class="status ${item.status === '待回访' ? 'status-pending' : 'status-no-need'}">${item.status}</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="body-row">类型: <span class="value-black">${item.type}</span></div>
+                                    <div class="body-row time-sub">提交时间: <span class="value-black">${item.submitTime}</span></div>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div class="loading-text">暂无提报记录</div>';
+                    }
+                } catch (error) {
+                    console.error("❌ 拉取数据失败:", error);
+                    document.getElementById('clues-list-container').innerHTML = '<div class="loading-text">数据拉取失败</div>';
+                }
+            }
+
+            const openModalBtn = document.getElementById('open-clue-modal-btn');
+            const modal = document.getElementById('add-clue-modal');
+            const overlay = document.getElementById('modal-overlay');
+            const cancelBtn = document.getElementById('clue-cancel-btn');
+            const confirmBtn = document.getElementById('clue-confirm-btn');
+            const phoneInput = document.getElementById('clue-phone-input');
+
+            openModalBtn.addEventListener('click', () => {
+                phoneInput.value = ''; 
+                modal.classList.add('active');
+            });
+
+            const closeModal = () => modal.classList.remove('active');
+            cancelBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', closeModal);
+
+            // ================= 核心发送逻辑 =================
+            confirmBtn.addEventListener('click', async () => {
+                const phoneNumber = phoneInput.value.trim();
+                console.log("【4】你点击了确认按钮！准备提交手机号：", phoneNumber);
+                
+                if (!phoneNumber || phoneNumber.length !== 11) {
+                    alert('请输入11位数字手机号');
+                    return;
+                }
+
+                confirmBtn.disabled = true;
+                confirmBtn.innerText = '发送中...';
+
+                try {
+                    console.log("【5】正在向 Python 发送 POST 请求...");
+                    const response = await fetch(`${API_BASE_URL}/clues`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': '1'
+                        },
+                        body: JSON.stringify({ phone: phoneNumber })
+                    });
+                    
+                    const result = await response.json();
+                    console.log("【6】Python 后端回复了：", result);
+                    
+                    if (result.code === 200) {
+                        closeModal(); 
+                        loadCluesData(); // 重新拉取最新列表
+                    } else {
+                        alert(result.message || '提交失败');
+                    }
+                } catch (error) {
+                    console.error("❌ 提交失败:", error);
+                    alert('网络异常，确保终端里的 Python 在跑！');
+                } finally {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerText = '确认';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
