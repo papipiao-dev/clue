@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>需求列表</title>
+    <style>
+        :root {
+            --bg-color: #F8F8F8; 
+            --primary-color: #4A90E2; 
+            --text-color-title: #000000; 
+            --text-color-body: #666666; 
+            --text-color-sub: #999999; 
+            --card-bg: #FFFFFF; 
+            --purple-color: #9B51E0; 
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+            
+            --icon-record: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M19,3H5C3.89,3 3,3.89 3,5V19C3,20.1 3.89,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M7,10H17V12H7V10M7,14H17V16H7V14M7,6H17V8H7V6Z'%2F%3E%3C/svg%3E");
+            --icon-record-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234A90E2' d='M19,3H5C3.89,3 3,3.89 3,5V19C3,20.1 3.89,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.89 20.1,3 19,3M19,19H5V5H19V19M7,10H17V12H7V10M7,14H17V16H7V14M7,6H17V8H7V6Z'%2F%3E%3C/svg%3E");
+            --icon-needs: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M7,13H21V11H7V13M7,17H21V15H7V17M7,9H21V7H7V9M3,8A1,1 0 0,0 2,9A1,1 0 0,0 3,10A1,1 0 0,0 4,9A1,1 0 0,0 3,8M3,12A1,1 0 0,0 2,13A1,1 0 0,0 3,14A1,1 0 0,0 4,13A1,1 0 0,0 3,12M3,16A1,1 0 0,0 2,17A1,1 0 0,0 3,18A1,1 0 0,0 4,17A1,1 0 0,0 3,16Z'%2F%3E%3C/svg%3E");
+            --icon-needs-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234A90E2' d='M7,13H21V11H7V13M7,17H21V15H7V17M7,9H21V7H7V9M3,8A1,1 0 0,0 2,9A1,1 0 0,0 3,10A1,1 0 0,0 4,9A1,1 0 0,0 3,8M3,12A1,1 0 0,0 2,13A1,1 0 0,0 3,14A1,1 0 0,0 4,13A1,1 0 0,0 3,12M3,16A1,1 0 0,0 2,17A1,1 0 0,0 3,18A1,1 0 0,0 4,17A1,1 0 0,0 3,16Z'%2F%3E%3C/svg%3E");
+            --icon-link: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23666666' d='M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.53,8.71 19.53,6.81 18.36,5.64C17.19,4.47 15.29,4.47 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,10.59C13.8,10.2 14.44,10.2 14.83,10.59C16.78,12.54 16.78,15.71 14.83,17.76L11.29,21.29C9.34,23.24 6.17,23.24 4.22,21.29C2.27,19.34 2.27,16.17 4.22,14.22L5.71,12.73C5.7,13.54 5.83,14.36 6.11,15.14L5.64,15.61C4.47,16.78 4.47,18.68 5.64,19.85C6.81,21.02 8.71,21.02 9.88,19.85L13.41,16.32C14.59,15.15 14.59,13.25 13.41,12.09C13.02,11.7 13.02,11.06 13.41,10.67L13.41,10.59Z'%2F%3E%3C/svg%3E");
+            --icon-link-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234A90E2' d='M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.53,8.71 19.53,6.81 18.36,5.64C17.19,4.47 15.29,4.47 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,10.59C13.8,10.2 14.44,10.2 14.83,10.59C16.78,12.54 16.78,15.71 14.83,17.76L11.29,21.29C9.34,23.24 6.17,23.24 4.22,21.29C2.27,19.34 2.27,16.17 4.22,14.22L5.71,12.73C5.7,13.54 5.83,14.36 6.11,15.14L5.64,15.61C4.47,16.78 4.47,18.68 5.64,19.85C6.81,21.02 8.71,21.02 9.88,19.85L13.41,16.32C14.59,15.15 14.59,13.25 13.41,12.09C13.02,11.7 13.02,11.06 13.41,10.67L13.41,10.59Z'%2F%3E%3C/svg%3E");
+            --icon-add: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%239B51E0' d='M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z'%2F%3E%3C/svg%3E");
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-stack); background-color: var(--bg-color); color: var(--text-color-body); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+        .app-viewport { width: 100vw; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-color); position: relative;}
+        .status-bar { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; color: var(--text-color-title); }
+        .status-bar .right-icons { display: flex; gap: 5px; align-items: center; }
+        .status-bar-icon { width: 16px; height: 16px; }
+        .status-signal { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 12V16.7L22 18.7V12H20M12 11V14.7L14 16.7V11H12M8 10V13.7L10 15.7V10H8M16 11.7L18 13.7V12H16M4 8.7L6 10.7V9H4' fill='%23000'/%3E%3C/svg%3E"); }
+        .status-wifi { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3C7.3 3 3.1 4.7.1 7.6L12 21 23.9 7.6C20.9 4.7 16.7 3 12 3M21.1 8.8C18.6 6.4 15.4 5 12 5S5.4 6.4 2.9 8.8L12 19.3 21.1 8.8Z' fill='%23000'/%3E%3C/svg%3E"); }
+        .status-battery { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M17 6V4H7V6C5.9 6 5 6.9 5 8V18C5 19.1 5.9 20 7 20H17C18.1 20 19 19.1 19 18V8C19 6.9 18.1 6 17 6M17 18H7V8H17V18M11 10H13V12H15V14H13V16H11V14H9V12H11V10Z' fill='%23000'/%3E%3C/svg%3E"); }
+        .main-content { flex: 1; overflow-y: auto; padding: 20px 20px 100px 20px; }
+        .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-color-title); margin-bottom: 20px; }
+        .value-black { color: var(--text-color-title); }
+        .needs-summary { margin-bottom: 15px; font-size: 14px; color: var(--text-color-body); }
+        .needs-summary span { font-weight: 700; color: var(--text-color-title); }
+        .card-list { display: flex; flex-direction: column; gap: 15px; }
+        .card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); animation: modalFadeIn 0.3s ease-out;}
+        .card-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .card-header .phone { font-size: 16px; font-weight: 700; color: var(--text-color-title); }
+        .card-header .time-sub { font-size: 12px; color: var(--text-color-body); }
+        .commission-row { text-align: right; font-size: 13px; color: var(--text-color-title); margin-top: 4px; margin-bottom: 10px; }
+        .card-body .detail { font-size: 13px; color: var(--text-color-body); line-height: 1.6; margin-bottom: 3px; }
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
+        .nav-icon { width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain; background-position: center; margin-bottom: 4px; }
+        .nav-text { font-size: 10px; font-weight: 500; }
+        .nav-item.active { color: var(--primary-color); }
+        .nav-item-record .nav-icon { background-image: var(--icon-record); }
+        .nav-item-needs .nav-icon { background-image: var(--icon-needs); }
+        .nav-item-short-link .nav-icon { background-image: var(--icon-link); }
+        .nav-item-record.active .nav-icon { background-image: var(--icon-record-active); }
+        .nav-item-needs.active .nav-icon { background-image: var(--icon-needs-active); }
+        .nav-item-short-link.active .nav-icon { background-image: var(--icon-link-active); }
+        .page { display: none; height: 100%; }
+        .page.active { display: block; }
+        .loading-text { text-align: center; color: var(--text-color-sub); padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="app-viewport">
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="right-icons">
+                <div class="status-bar-icon status-signal"></div>
+                <div class="status-bar-icon status-wifi"></div>
+                <div class="status-bar-icon status-battery"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="page-needs-list" class="page active">
+                <div class="page-header">
+                    <h1>需求列表</h1>
+                </div>
+                <div class="needs-summary" id="needs-summary-container"></div>
+                <div class="card-list" id="needs-list-container">
+                    <div class="loading-text">数据加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item nav-item-record" onclick="window.location.href='record.html'">
+        <div class="nav-icon"></div>
+        <div class="nav-text">提报记录</div>
+    </div>
+    <div class="nav-item nav-item-needs active" onclick="window.location.href='need.html'">
+        <div class="nav-icon"></div>
+        <div class="nav-text">需求列表</div>
+    </div>
+    <div class="nav-item nav-item-short-link" onclick="window.location.href='shortlink.html'">
+        <div class="nav-icon"></div>
+        <div class="nav-text">我的短链</div>
+    </div>
+        </nav>
+    </div>
+
+    <script>
+        // 确保这里的端口是 8888，和你的 Python 后端保持一致！
+    const API_BASE_URL = 'http://127.0.0.1:8888/api';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("【1】需求列表页面加载，准备向后端拉取数据...");
+        loadNeedsData();
+
+        async function loadNeedsData() {
+            try {
+                // 向 Python 后端的 /api/needs 接口发 GET 请求
+                const response = await fetch(`${API_BASE_URL}/needs`, {
+                    headers: { 'Authorization': '1' } // 依然用测试账号 1
+                });
+                const result = await response.json();
+                console.log("【2】成功拿到后端返回的需求数据：", result);
+                
+                // 假设你的列表容器 class 叫 card-list，或者有一个明确的 id，这里用 class 选择器兼容一下
+                const container = document.querySelector('.card-list'); 
+                
+                if (result.code === 200 && result.data.length > 0) {
+                    // 把真实数据塞进 HTML 卡片里
+                    container.innerHTML = result.data.map(item => `
+                        <div class="card">
+                            <div class="card-header">
+                                <span class="phone">${item.phone || '未知号码'}</span>
+                                <span class="time-sub">提交时间: ${item.submitTime || ''}</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="detail">需求城市: <span class="value-black">${item.city || '待定'}</span></div>
+                                <div class="detail">需求地址: <span class="value-black">${item.address || '待定'}</span></div>
+                                <div class="detail commission-text">佣金: ¥<span class="value-black">${item.commission || 0}</span></div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="loading-text">暂无需求记录</div>';
+                }
+            } catch (error) {
+                console.error("❌ 拉取数据失败:", error);
+                document.querySelector('.card-list').innerHTML = '<div class="loading-text">数据拉取失败，请检查 Python 是否运行在 8888 端口</div>';
+            }
+        }
+    });
+    </script>
+</body>
+</html>
