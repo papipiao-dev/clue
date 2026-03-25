@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <link rel="manifest" href="/manifest.json">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="线索管理">
+    
+    <link rel="apple-touch-icon" href="/icon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>登录 - 线索管理系统</title>
@@ -32,8 +39,6 @@
             display: flex;
             flex-direction: column;
             padding: 60px 30px 30px 30px;
-            /* 如果想在PC上看清楚边界，可以取消下面这行注释 */
-            /* border: 1px solid #eaeaea; box-shadow: 0 4px 20px rgba(0,0,0,0.05); */
         }
 
         /* 顶部插图区 */
@@ -106,7 +111,7 @@
         .input-wrapper.active input {
             border-left: 1px solid #333;
             padding-left: 2px;
-            margin-left: -3px; /* 抵消padding带来的位移 */
+            margin-left: -3px;
             animation: blink 1s step-end infinite;
         }
 
@@ -135,6 +140,11 @@
             background-color: #1a73e8;
         }
 
+        .btn-login:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
         /* 底部 iOS Home Indicator */
         .home-indicator {
             position: absolute;
@@ -155,13 +165,10 @@
     <div class="illustration">
         <svg width="120" height="100" viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
             <polyline points="0,0 0,80 120,80" fill="none" stroke="#cbd5e1" stroke-width="2"/>
-            
             <rect x="20" y="45" width="15" height="35" fill="#9ca3af" rx="2" />
             <rect x="50" y="28" width="15" height="52" fill="#9ca3af" rx="2" />
             <rect x="80" y="10" width="15" height="70" fill="#3b82f6" rx="2" />
-            
             <polyline points="10,55 40,36 70,46 100,-8" fill="none" stroke="#1e293b" stroke-width="2"/>
-            
             <circle cx="10" cy="55" r="2.5" fill="#1e293b"/>
             <circle cx="40" cy="36" r="2.5" fill="#1e293b"/>
             <circle cx="70" cy="46" r="2.5" fill="#1e293b"/>
@@ -171,7 +178,7 @@
 
     <h1 class="title">线索管理系统 v1.0</h1>
 
-    <form onsubmit="event.preventDefault();window.location.href='record.html';">
+    <form id="loginForm">
         
         <div class="form-group">
             <div class="input-wrapper active">
@@ -181,7 +188,7 @@
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </div>
-                <input type="text" placeholder="请输入账号" autocomplete="off" />
+                <input type="text" id="accountInput" placeholder="请输入账号" autocomplete="off" />
             </div>
         </div>
 
@@ -193,11 +200,11 @@
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                 </div>
-                <input type="password" placeholder="请输入密码" autocomplete="off" />
+                <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off" />
             </div>
         </div>
 
-        <button type="submit" class="btn-login">登录</button>
+        <button type="submit" class="btn-login" id="loginBtn">登录</button>
         
     </form>
 
@@ -205,5 +212,76 @@
 
 </div>
 
+<script>
+    // 注册 PWA 的 Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+            console.log('PWA ServiceWorker 注册成功！');
+        }).catch(err => {
+            console.log('PWA 注册失败: ', err);
+        });
+    });
+}
+    // 这里已经换成了你服务器的公网 IP
+    const API_BASE_URL = 'http://150.158.82.114:8888/api';
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+
+        const account = document.getElementById('accountInput').value.trim();
+        const password = document.getElementById('passwordInput').value.trim();
+
+        if (!account || !password) {
+            alert("请输入账号和密码！");
+            return;
+        }
+
+        loginBtn.innerText = "登录中...";
+        loginBtn.disabled = true;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ account, password })
+            });
+
+            const result = await response.json();
+
+            if (result.code === 200) {
+                // 登录成功，把 token 存入浏览器的 localStorage 中
+                localStorage.setItem('user_token', result.data.token);
+                localStorage.setItem('user_name', result.data.user_name);
+                
+                // 跳转到提报记录页
+                window.location.href = 'record.html';
+            } else {
+                alert(result.message); // 弹出报错（比如账号密码错误）
+            }
+        } catch (error) {
+            console.error("登录请求失败:", error);
+            alert("网络错误，请检查 Python 后端是否已在 8888 端口启动！");
+        } finally {
+            loginBtn.innerText = "登录";
+            loginBtn.disabled = false;
+        }
+    });
+
+    // 简单的输入框交互：点击时高亮边框
+    const wrappers = document.querySelectorAll('.input-wrapper');
+    const inputs = document.querySelectorAll('.input-wrapper input');
+    
+    inputs.forEach((input, index) => {
+        input.addEventListener('focus', () => {
+            wrappers.forEach(w => w.classList.remove('active'));
+            wrappers[index].classList.add('active');
+        });
+    });
+</script>
 </body>
 </html>
