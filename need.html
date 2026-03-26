@@ -107,7 +107,6 @@
     </div>
 
     <script>
-        // 接口相对路径
     const API_BASE_URL = '/api';
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -116,14 +115,13 @@
 
         async function loadNeedsData() {
             try {
-                // 向 Python 后端的 /api/needs 接口发 GET 请求
+                // 向 Python 后端发 GET 请求
                 const response = await fetch(`${API_BASE_URL}/needs`, {
-                    headers: { 'Authorization': '1' } // 依然用测试账号 1
+                    headers: { 'Authorization': '1' } 
                 });
                 const result = await response.json();
                 console.log("【2】成功拿到后端返回的需求数据：", result);
                 
-                // 假设你的列表容器 class 叫 card-list，或者有一个明确的 id，这里用 class 选择器兼容一下
                 const container = document.querySelector('.card-list'); 
                 
                 if (result.code === 200) {
@@ -132,27 +130,30 @@
                     document.getElementById('needs-summary-container').innerHTML = 
                         `共 <span>${summary.total}</span> 条未结算需求，预估总佣金 <span>¥${summary.totalCommission}</span>`;
 
-                    // 2. 渲染下方的卡片列表，注意这里加上了 .list
+                    // 2. 渲染下方的卡片列表
                     if (result.data.list && result.data.list.length > 0) {
                         container.innerHTML = result.data.list.map(item => `
                             <div class="card">
-                            <div class="card-header">
-                                <span class="phone">${item.phone || '未知号码'}</span>
-                                <span class="time-sub">提交时间: ${item.submitTime || ''}</span>
+                                <div class="card-header">
+                                    <span class="phone">${item.phone || '未知号码'}</span>
+                                    <span class="time-sub">提交时间: ${item.submitTime || ''}</span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="detail">需求城市: <span class="value-black">${item.city || '待定'}</span></div>
+                                    <div class="detail">需求地址: <span class="value-black">${item.address || '待定'}</span></div>
+                                    <div class="detail commission-text">佣金: ¥<span class="value-black">${item.commission || 0}</span></div>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="detail">需求城市: <span class="value-black">${item.city || '待定'}</span></div>
-                                <div class="detail">需求地址: <span class="value-black">${item.address || '待定'}</span></div>
-                                <div class="detail commission-text">佣金: ¥<span class="value-black">${item.commission || 0}</span></div>
-                            </div>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div class="loading-text">暂无需求记录</div>';
+                    }
                 } else {
-                    container.innerHTML = '<div class="loading-text">暂无需求记录</div>';
+                    container.innerHTML = `<div class="loading-text">${result.message || '获取数据失败'}</div>`;
                 }
             } catch (error) {
                 console.error("❌ 拉取数据失败:", error);
-                document.querySelector('.card-list').innerHTML = '<div class="loading-text">数据拉取失败，请检查 Python 是否运行在 8888 端口</div>';
+                document.querySelector('.card-list').innerHTML = '<div class="loading-text">网络异常或服务器未响应</div>';
             }
         }
     });
