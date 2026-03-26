@@ -136,7 +136,7 @@ def needs():
         with conn.cursor() as cursor:
             # 1. 查询需求列表 (status = 3)
             sql_list = """
-                SELECT phone, city, address, commission, need_submit_time 
+                SELECT phone, city, address, commission, need_submit_time, is_checkout 
                 FROM biz_clue 
                 WHERE user_id=%s AND status=3 
                 ORDER BY need_submit_time DESC
@@ -149,8 +149,8 @@ def needs():
             cursor.execute(sql_count, (user_id,))
             total_uncheckout = cursor.fetchone()['total'] or 0
 
-            # 3. 统计合计佣金 (is_checkout=1 的总佣金)
-            sql_commission = "SELECT SUM(commission) as total_comm FROM biz_clue WHERE user_id=%s AND status=3 AND is_checkout=1"
+            # 3. 统计待结算佣金 (is_checkout=0 的总佣金之和)
+            sql_commission = "SELECT SUM(commission) as total_comm FROM biz_clue WHERE user_id=%s AND status=3 AND is_checkout=0"
             cursor.execute(sql_commission, (user_id,))
             total_commission = cursor.fetchone()['total_comm'] or 0.00
 
@@ -162,6 +162,7 @@ def needs():
                     'city': row['city'] or '未分配',
                     'address': row['address'] or '未分配',
                     'commission': float(row['commission']),
+                    'is_checkout': row['is_checkout'], # 下发结算状态给前端
                     'submitTime': row['need_submit_time'].strftime('%Y-%m-%d %H:%M:%S') if row['need_submit_time'] else ''
                 })
 

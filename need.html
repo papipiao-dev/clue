@@ -134,7 +134,7 @@
                     // 1. 渲染顶部的汇总数据 (总单数和总佣金)
                     const summary = result.data.summary;
                     document.getElementById('needs-summary-container').innerHTML = 
-                        `共 <span>${summary.total}</span> 条未结算需求，预估总佣金 <span>¥${summary.totalCommission}</span>`;
+                        `共 <span>${summary.total}</span> 条未结算需求，总佣金 <span>¥${summary.totalCommission}</span>`;
 
                     // 2. 渲染下方的卡片列表
                     if (result.data.list && result.data.list.length > 0) {
@@ -144,7 +144,7 @@
                                     <div class="phone">${item.phone || '未知号码'}</div>
                                     <div class="right-info">
                                         <div class="time-enlarged">${item.submitTime || ''}</div>
-                                        <div class="commission-text">佣金: ¥<span class="value-black">${item.commission || 0}</span></div>
+                                        const labelText = item.is_checkout === 1 ? '已结算' : '佣金';
                                     </div>
                                 </div>
                                 <div class="card-body">
