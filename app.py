@@ -3,9 +3,15 @@ from flask_cors import CORS
 import pymysql
 import datetime
 
-app = Flask(__name__)
+# 将当前文件夹(.)设为静态网页目录
+app = Flask(__name__, static_folder='.', static_url_path='')
 # 允许跨域请求，方便前端直接在本地浏览器打开 html 测试
 CORS(app)
+
+# 新增路由：当访问根目录时，默认返回登录页
+@app.route('/')
+def index():
+    return app.send_static_file('login.html')
 
 # ==========================================
 # 数据库配置 (请根据实际情况修改)

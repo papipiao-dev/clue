@@ -223,8 +223,8 @@ if ('serviceWorker' in navigator) {
         });
     });
 }
-    // 这里已经换成了你服务器的公网 IP
-    const API_BASE_URL = 'http://150.158.82.114:8888/api';
+    // 使用相对路径，自动适配当前访问的域名或 IP
+    const API_BASE_URL = '/api';
     const loginForm = document.getElementById('loginForm');
     const loginBtn = document.getElementById('loginBtn');
 
