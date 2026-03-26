@@ -46,10 +46,16 @@
         .needs-summary span { font-weight: 700; color: var(--text-color-title); }
         .card-list { display: flex; flex-direction: column; gap: 15px; }
         .card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); animation: modalFadeIn 0.3s ease-out;}
-        .card-header { display: flex; justify-content: space-between; align-items: baseline; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .card-header .phone { font-size: 16px; font-weight: 700; color: var(--text-color-title); }
-        .card-header .time-sub { font-size: 12px; color: var(--text-color-body); }
-        .commission-row { text-align: right; font-size: 13px; color: var(--text-color-title); margin-top: 4px; margin-bottom: 10px; }
+        .card-header .right-info { text-align: right; }
+        /* 要求2：时间放大并加深颜色 */
+        .card-header .time-enlarged { font-size: 14px; color: var(--text-color-title); font-weight: 500; margin-bottom: 4px; }
+        /* 要求3：佣金排在时间下方的样式优化 */
+        .card-header .commission-text { font-size: 13px; color: var(--text-color-body); }
+        .card-header .commission-text .value-black { font-size: 15px; font-weight: 600; color: var(--text-color-title); }
+        /* 要求4：需求城市与上方行距加高 */
+        .card-body { margin-top: 15px; } 
         .card-body .detail { font-size: 13px; color: var(--text-color-body); line-height: 1.6; margin-bottom: 3px; }
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
         .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
@@ -135,13 +141,15 @@
                         container.innerHTML = result.data.list.map(item => `
                             <div class="card">
                                 <div class="card-header">
-                                    <span class="phone">${item.phone || '未知号码'}</span>
-                                    <span class="time-sub">提交时间: ${item.submitTime || ''}</span>
+                                    <div class="phone">${item.phone || '未知号码'}</div>
+                                    <div class="right-info">
+                                        <div class="time-enlarged">${item.submitTime || ''}</div>
+                                        <div class="commission-text">佣金: ¥<span class="value-black">${item.commission || 0}</span></div>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="detail">需求城市: <span class="value-black">${item.city || '待定'}</span></div>
                                     <div class="detail">需求地址: <span class="value-black">${item.address || '待定'}</span></div>
-                                    <div class="detail commission-text">佣金: ¥<span class="value-black">${item.commission || 0}</span></div>
                                 </div>
                             </div>
                         `).join('');
