@@ -126,10 +126,16 @@
                 // 假设你的列表容器 class 叫 card-list，或者有一个明确的 id，这里用 class 选择器兼容一下
                 const container = document.querySelector('.card-list'); 
                 
-                if (result.code === 200 && result.data.length > 0) {
-                    // 把真实数据塞进 HTML 卡片里
-                    container.innerHTML = result.data.map(item => `
-                        <div class="card">
+                if (result.code === 200) {
+                    // 1. 渲染顶部的汇总数据 (总单数和总佣金)
+                    const summary = result.data.summary;
+                    document.getElementById('needs-summary-container').innerHTML = 
+                        `共 <span>${summary.total}</span> 条未结算需求，预估总佣金 <span>¥${summary.totalCommission}</span>`;
+
+                    // 2. 渲染下方的卡片列表，注意这里加上了 .list
+                    if (result.data.list && result.data.list.length > 0) {
+                        container.innerHTML = result.data.list.map(item => `
+                            <div class="card">
                             <div class="card-header">
                                 <span class="phone">${item.phone || '未知号码'}</span>
                                 <span class="time-sub">提交时间: ${item.submitTime || ''}</span>
