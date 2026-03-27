@@ -24,8 +24,13 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: var(--font-stack); background-color: var(--bg-color); color: var(--text-color-body); font-size: 14px; line-height: 1.5; }
+        
+        /* 修复底部被遮挡的核心 CSS */
         .app-viewport { width: 100vw; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-color); position: relative;}
-        .main-content { flex: 1; overflow-y: auto; padding: 20px 20px 100px 20px; }
+        @supports (height: 100dvh) { .app-viewport { height: 100dvh; } }
+        .main-content { flex: 1; overflow-y: auto; padding: 20px; }
+        .bottom-nav { flex-shrink: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
+        
         .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-color-title); margin-bottom: 20px; }
         .value-black { color: var(--text-color-title); }
         .card-list { display: flex; flex-direction: column; gap: 15px; }
@@ -44,7 +49,6 @@
         .card-clue .card-header { margin-bottom: 12px; }
         .card-clue .body-row { font-size: 15px; color: var(--text-color-body); margin-bottom: 12px; }
         .card-clue .body-row:last-child { margin-bottom: 0; }
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
         .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
         .nav-icon { width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain; background-position: center; margin-bottom: 4px; }
         .nav-text { font-size: 12px; font-weight: 500; }
@@ -110,27 +114,22 @@
     </div>
 
     <script>
-        console.log("【1】网页代码已成功加载！");
-        
         const API_BASE_URL = '/api';
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- 路由守卫：检查是否登录 ---
             const userToken = localStorage.getItem('user_token');
             if (!userToken) {
                 alert("请先登录！");
                 window.location.href = 'login.html';
-                return; // 阻止后续代码执行
+                return; 
             }
 
-            console.log("【2】网页元素准备完毕，开始去数据库拉数据...");
             loadCluesData();
 
             async function loadCluesData() {
                 try {
                     const response = await fetch(`${API_BASE_URL}/clues`, { headers: { 'Authorization': userToken } });
                     const result = await response.json();
-                    console.log("【3】成功拿到后端返回的数据：", result);
                     
                     const container = document.getElementById('clues-list-container');
                     if (result.code === 200 && result.data.length > 0) {
@@ -171,11 +170,8 @@
             cancelBtn.addEventListener('click', closeModal);
             overlay.addEventListener('click', closeModal);
 
-            // ================= 核心发送逻辑 =================
             confirmBtn.addEventListener('click', async () => {
                 const phoneNumber = phoneInput.value.trim();
-                console.log("【4】你点击了确认按钮！准备提交手机号：", phoneNumber);
-                
                 if (!phoneNumber || phoneNumber.length !== 11) {
                     alert('请输入11位数字手机号');
                     return;
@@ -185,7 +181,6 @@
                 confirmBtn.innerText = '发送中...';
 
                 try {
-                    console.log("【5】正在向 Python 发送 POST 请求...");
                     const response = await fetch(`${API_BASE_URL}/clues`, {
                         method: 'POST',
                         headers: { 
@@ -196,16 +191,14 @@
                     });
                     
                     const result = await response.json();
-                    console.log("【6】Python 后端回复了：", result);
                     
                     if (result.code === 200) {
                         closeModal(); 
-                        loadCluesData(); // 重新拉取最新列表
+                        loadCluesData(); 
                     } else {
                         alert(result.message || '提交失败');
                     }
                 } catch (error) {
-                    console.error("❌ 提交失败:", error);
                     alert('网络异常，确保终端里的 Python 在跑！');
                 } finally {
                     confirmBtn.disabled = false;
