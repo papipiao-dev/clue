@@ -131,26 +131,17 @@
                 const container = document.querySelector('.card-list'); 
                 
                 if (result.code === 200) {
-                    // 1. 渲染顶部的汇总数据 (总单数和总佣金)
-                    const summary = result.data.summary;
-                    document.getElementById('needs-summary-container').innerHTML = 
-                        `共 <span>${summary.total}</span> 条未结算需求，总佣金 <span>¥${summary.totalCommission}</span>`;
-
-                    // 2. 渲染下方的卡片列表
-                    if (result.code === 200) {
-                    // 1. 渲染顶部的汇总数据 (确保文字改成了“待结算”)
+                    // 1. 渲染顶部的汇总数据
                     const summary = result.data.summary;
                     document.getElementById('needs-summary-container').innerHTML = 
                         `共 <span>${summary.total}</span> 条未结算需求，待结算 <span>¥${summary.totalCommission}</span>`;
 
                     // 2. 渲染下方的卡片列表
                     if (result.data.list && result.data.list.length > 0) {
-                        // 【关键修正点】：先写逻辑，再返回 HTML
                         container.innerHTML = result.data.list.map(item => {
-                            // 先在这里判断是显示“已结算”还是“佣金”
+                            // 判断是显示“已结算”还是“佣金”
                             const labelText = item.is_checkout === 1 ? '已结算' : '佣金';
                             
-                            // 然后用 return 返回 HTML 字符串
                             return `
                                 <div class="card">
                                     <div class="card-header">
@@ -163,16 +154,15 @@
                                         </div>
                                     </div>
                                     <div class="card-body">
-                                        <div class="detail">城市: <span class="value-black">${item.city || '待定'}</span></div>
-                                        <div class="detail">地址: <span class="value-black">${item.address || '待定'}</span></div>
+                                        <div class="detail">需求城市: <span class="value-black">${item.city || '待定'}</span></div>
+                                        <div class="detail">需求地址: <span class="value-black">${item.address || '待定'}</span></div>
                                     </div>
                                 </div>
                             `;
-                        }).join(''); // 别忘了末尾的 .join('')
+                        }).join(''); 
                     } else {
                         container.innerHTML = '<div class="loading-text">暂无需求记录</div>';
                     }
-                }
                 } else {
                     container.innerHTML = `<div class="loading-text">${result.message || '获取数据失败'}</div>`;
                 }

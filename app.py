@@ -54,8 +54,6 @@ def login():
                     return jsonify({'code': 403, 'message': '该账号已被禁用'})
                 
                 # 登录成功，返回用户信息。
-                # 实际项目中这里应该生成 JWT Token 返回，为了演示精简，我们直接返回 user_id 
-                # 前端后续请求可以在 Header 中带上这个 user_id 代表身份
                 return jsonify({
                     'code': 200, 
                     'message': '登录成功', 
@@ -74,8 +72,6 @@ def login():
 # ==========================================
 @app.route('/api/clues', methods=['GET', 'POST'])
 def clues():
-    # 模拟从 Header 提取 token (即 user_id)
-    # 实际开发中前端需要在 fetch 的 headers 里加上: 'Authorization': '1'
     user_id = request.headers.get('Authorization', '1') # 默认用 1 作为测试
 
     conn = get_db_connection()
@@ -89,7 +85,7 @@ def clues():
                 if not phone or len(phone) != 11:
                     return jsonify({'code': 400, 'message': '手机号格式不正确'})
 
-                # 插入数据，默认 status 为 0 (线索-待回访)
+                # 插入数据，默认 status 为 0 (表示无需求)
                 sql = """
                     INSERT INTO biz_clue (user_id, phone, status, type, create_time) 
                     VALUES (%s, %s, 0, '自主提交', %s)
@@ -98,19 +94,28 @@ def clues():
                 conn.commit()
                 return jsonify({'code': 200, 'message': '添加成功'})
 
-            # 1. 查询需求列表 (原本是 status=3，现在改为 status=1)
-            sql_list = """
-                SELECT phone, city, address, commission, need_submit_time, is_checkout 
-                FROM biz_clue 
-                WHERE user_id=%s AND status=1 
-                ORDER BY need_submit_time DESC
-            """
-            
-            # 2. 统计提交问题 (原本是 status=3，现在改为 status=1)
-            sql_count = "SELECT COUNT(*) as total FROM biz_clue WHERE user_id=%s AND status=1 AND is_checkout=0"
-            
-            # 3. 统计待结算佣金 (原本是 status=3，现在改为 status=1)
-            sql_commission = "SELECT SUM(commission) as total_comm FROM biz_clue WHERE user_id=%s AND status=1 AND is_checkout=0"
+            elif request.method == 'GET':
+                # 获取提报记录列表: 此时只查 status = 0 的数据
+                sql = """
+                    SELECT phone, type, status, create_time 
+                    FROM biz_clue 
+                    WHERE user_id=%s AND status = 0 
+                    ORDER BY create_time DESC
+                """
+                cursor.execute(sql, (user_id,))
+                rows = cursor.fetchall()
+                
+                # 格式化数据以匹配前端展示
+                formatted_data = []
+                for row in rows:
+                    formatted_data.append({
+                        'phone': row['phone'],
+                        'type': row['type'],
+                        'status': '无需求', # 强制返回无需求
+                        'submitTime': row['create_time'].strftime('%Y-%m-%d %H:%M:%S') if row['create_time'] else ''
+                    })
+                    
+                return jsonify({'code': 200, 'data': formatted_data})
     finally:
         conn.close()
 
@@ -124,23 +129,23 @@ def needs():
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # 1. 查询需求列表 (status = 3)
+            # 1. 查询需求列表 (现在是 status = 1)
             sql_list = """
                 SELECT phone, city, address, commission, need_submit_time, is_checkout 
                 FROM biz_clue 
-                WHERE user_id=%s AND status=3 
+                WHERE user_id=%s AND status=1 
                 ORDER BY need_submit_time DESC
             """
             cursor.execute(sql_list, (user_id,))
             list_rows = cursor.fetchall()
 
-            # 2. 统计提交问题 (is_checkout=0 的总数)
-            sql_count = "SELECT COUNT(*) as total FROM biz_clue WHERE user_id=%s AND status=3 AND is_checkout=0"
+            # 2. 统计提交问题 (is_checkout=0 的总数，且 status=1)
+            sql_count = "SELECT COUNT(*) as total FROM biz_clue WHERE user_id=%s AND status=1 AND is_checkout=0"
             cursor.execute(sql_count, (user_id,))
             total_uncheckout = cursor.fetchone()['total'] or 0
 
-            # 3. 统计待结算佣金 (is_checkout=0 的总佣金之和)
-            sql_commission = "SELECT SUM(commission) as total_comm FROM biz_clue WHERE user_id=%s AND status=3 AND is_checkout=0"
+            # 3. 统计待结算佣金 (is_checkout=0 的总佣金之和，且 status=1)
+            sql_commission = "SELECT SUM(commission) as total_comm FROM biz_clue WHERE user_id=%s AND status=1 AND is_checkout=0"
             cursor.execute(sql_commission, (user_id,))
             total_commission = cursor.fetchone()['total_comm'] or 0.00
 
