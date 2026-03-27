@@ -42,12 +42,12 @@
         .card-clue .status-pending { color: var(--primary-color); }
         .card-clue .status-no-need { color: var(--text-color-sub); }
         .card-clue .card-header { margin-bottom: 12px; }
-        .card-clue .body-row { font-size: 13px; color: var(--text-color-body); margin-bottom: 12px; }
+        .card-clue .body-row { font-size: 15px; color: var(--text-color-body); margin-bottom: 12px; }
         .card-clue .body-row:last-child { margin-bottom: 0; }
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
         .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
         .nav-icon { width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain; background-position: center; margin-bottom: 4px; }
-        .nav-text { font-size: 10px; font-weight: 500; }
+        .nav-text { font-size: 12px; font-weight: 500; }
         .nav-item.active { color: var(--primary-color); }
         .nav-item-record .nav-icon { background-image: var(--icon-record); }
         .nav-item-needs .nav-icon { background-image: var(--icon-needs); }
@@ -130,7 +130,7 @@
                             <div class="card card-clue">
                                 <div class="card-header">
                                     <span class="phone">${item.phone}</span>
-                                    <span class="status ${item.status === '待回访' ? 'status-pending' : 'status-no-need'}">${item.status}</span>
+                                    <span class="status status-no-need">${item.status}</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="body-row">类型: <span class="value-black">${item.type}</span></div>

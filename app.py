@@ -98,29 +98,19 @@ def clues():
                 conn.commit()
                 return jsonify({'code': 200, 'message': '添加成功'})
 
-            elif request.method == 'GET':
-                # 获取提报记录列表: status IN (0, 2) 分别代表待回访、无需求
-                sql = """
-                    SELECT phone, type, status, create_time 
-                    FROM biz_clue 
-                    WHERE user_id=%s AND status IN (0, 2) 
-                    ORDER BY create_time DESC
-                """
-                cursor.execute(sql, (user_id,))
-                rows = cursor.fetchall()
-                
-                # 格式化数据以匹配前端展示
-                formatted_data = []
-                for row in rows:
-                    status_text = '待回访' if row['status'] == 0 else '无需求'
-                    formatted_data.append({
-                        'phone': row['phone'],
-                        'type': row['type'],
-                        'status': status_text,
-                        'submitTime': row['create_time'].strftime('%Y-%m-%d %H:%M:%S') if row['create_time'] else ''
-                    })
-                    
-                return jsonify({'code': 200, 'data': formatted_data})
+            # 1. 查询需求列表 (原本是 status=3，现在改为 status=1)
+            sql_list = """
+                SELECT phone, city, address, commission, need_submit_time, is_checkout 
+                FROM biz_clue 
+                WHERE user_id=%s AND status=1 
+                ORDER BY need_submit_time DESC
+            """
+            
+            # 2. 统计提交问题 (原本是 status=3，现在改为 status=1)
+            sql_count = "SELECT COUNT(*) as total FROM biz_clue WHERE user_id=%s AND status=1 AND is_checkout=0"
+            
+            # 3. 统计待结算佣金 (原本是 status=3，现在改为 status=1)
+            sql_commission = "SELECT SUM(commission) as total_comm FROM biz_clue WHERE user_id=%s AND status=1 AND is_checkout=0"
     finally:
         conn.close()
 
