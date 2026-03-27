@@ -115,12 +115,20 @@
         const API_BASE_URL = '/api';
 
         document.addEventListener('DOMContentLoaded', () => {
+            // --- 路由守卫：检查是否登录 ---
+            const userToken = localStorage.getItem('user_token');
+            if (!userToken) {
+                alert("请先登录！");
+                window.location.href = 'login.html';
+                return; // 阻止后续代码执行
+            }
+
             console.log("【2】网页元素准备完毕，开始去数据库拉数据...");
             loadCluesData();
 
             async function loadCluesData() {
                 try {
-                    const response = await fetch(`${API_BASE_URL}/clues`, { headers: { 'Authorization': '1' } });
+                    const response = await fetch(`${API_BASE_URL}/clues`, { headers: { 'Authorization': userToken } });
                     const result = await response.json();
                     console.log("【3】成功拿到后端返回的数据：", result);
                     
@@ -182,7 +190,7 @@
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
-                            'Authorization': '1'
+                            'Authorization': userToken
                         },
                         body: JSON.stringify({ phone: phoneNumber })
                     });

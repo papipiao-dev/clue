@@ -213,16 +213,25 @@
 </div>
 
 <script>
-    // 注册 PWA 的 Service Worker
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => {
-            console.log('PWA ServiceWorker 注册成功！');
-        }).catch(err => {
-            console.log('PWA 注册失败: ', err);
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        // 【优化】如果用户已经有 token（之前登录过了），直接跳到提报记录页，不用再登一次
+        const userToken = localStorage.getItem('user_token');
+        if (userToken) {
+            window.location.href = 'record.html';
+        }
     });
-}
+
+    // 注册 PWA 的 Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                console.log('PWA ServiceWorker 注册成功！');
+            }).catch(err => {
+                console.log('PWA 注册失败: ', err);
+            });
+        });
+    }
+
     // 使用相对路径，自动适配当前访问的域名或 IP
     const API_BASE_URL = '/api';
     const loginForm = document.getElementById('loginForm');

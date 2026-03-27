@@ -48,7 +48,7 @@
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
         .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
         .nav-icon { width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain; background-position: center; margin-bottom: 4px; }
-        .nav-text { font-size: 10px; font-weight: 500; }
+        .nav-text { font-size: 12px; font-weight: 500; }
         .nav-item.active { color: var(--primary-color); }
         .nav-item-record .nav-icon { background-image: var(--icon-record); }
         .nav-item-needs .nav-icon { background-image: var(--icon-needs); }
@@ -98,5 +98,16 @@
     </div>
         </nav>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 路由守卫：检查是否登录 ---
+        const userToken = localStorage.getItem('user_token');
+        if (!userToken) {
+            alert("请先登录！");
+            window.location.href = 'login.html';
+        }
+    });
+    </script>
 </body>
 </html>

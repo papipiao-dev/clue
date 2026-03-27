@@ -49,12 +49,9 @@
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .card-header .phone { font-size: 16px; font-weight: 700; color: var(--text-color-title); }
         .card-header .right-info { text-align: right; }
-        /* 要求2：时间放大并加深颜色 */
         .card-header .time-enlarged { font-size: 14px; color: var(--text-color-title); font-weight: 500; margin-bottom: 4px; }
-        /* 要求3：佣金排在时间下方的样式优化 */
         .card-header .commission-text { font-size: 13px; color: var(--text-color-body); }
         .card-header .commission-text .value-black { font-size: 15px; font-weight: 600; color: var(--text-color-title); }
-        /* 要求4：需求城市与上方行距加高 */
         .card-body { margin-top: 15px; } 
         .card-body .detail { font-size: 15px; color: var(--text-color-body); line-height: 1.6; margin-bottom: 3px; }
         .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; z-index: 100; }
@@ -116,14 +113,22 @@
     const API_BASE_URL = '/api';
 
     document.addEventListener('DOMContentLoaded', () => {
+        // --- 路由守卫：检查是否登录 ---
+        const userToken = localStorage.getItem('user_token');
+        if (!userToken) {
+            alert("请先登录！");
+            window.location.href = 'login.html';
+            return; // 阻止后续代码执行
+        }
+
         console.log("【1】需求列表页面加载，准备向后端拉取数据...");
         loadNeedsData();
 
         async function loadNeedsData() {
             try {
-                // 向 Python 后端发 GET 请求
+                // 向 Python 后端发 GET 请求，使用真实 userToken
                 const response = await fetch(`${API_BASE_URL}/needs`, {
-                    headers: { 'Authorization': '1' } 
+                    headers: { 'Authorization': userToken } 
                 });
                 const result = await response.json();
                 console.log("【2】成功拿到后端返回的需求数据：", result);
@@ -131,15 +136,12 @@
                 const container = document.querySelector('.card-list'); 
                 
                 if (result.code === 200) {
-                    // 1. 渲染顶部的汇总数据
                     const summary = result.data.summary;
                     document.getElementById('needs-summary-container').innerHTML = 
                         `共 <span>${summary.total}</span> 条未结算需求，待结算 <span>¥${summary.totalCommission}</span>`;
 
-                    // 2. 渲染下方的卡片列表
                     if (result.data.list && result.data.list.length > 0) {
                         container.innerHTML = result.data.list.map(item => {
-                            // 判断是显示“已结算”还是“佣金”
                             const labelText = item.is_checkout === 1 ? '已结算' : '佣金';
                             
                             return `
