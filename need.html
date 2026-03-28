@@ -128,30 +128,31 @@
                     if (result.data.list && result.data.list.length > 0) {
                         container.innerHTML = result.data.list.map(item => {
                             
-                            // 关键修改：在这里决定“结算状态”标签的样式，并在下面拼接到“佣金”下方
+                            // 1. 修改已结算颜色为灰色 (#999999)，并去掉之前为了排版加的 margin-top
                             const checkoutStatusHtml = item.is_checkout === 1 
-                                ? '<div style="font-size: 13px; color: #4A90E2; margin-top: 4px; font-weight: 600;">已结算</div>' 
-                                : '<div style="font-size: 13px; color: #ff9800; margin-top: 4px; font-weight: 600;">待结算</div>';
+                                ? '<div style="font-size: 13px; color: #999999; font-weight: 600;">已结算</div>' 
+                                : '<div style="font-size: 13px; color: #ff9800; font-weight: 600;">待结算</div>';
 
+                            // 2. 采用按“行”布局，彻底保证每一行间距完美一致
                             return `
                                 <div class="card">
-                                    <div class="card-header">
-                                        <div class="phone">${item.phone || '未知号码'}</div>
-                                        <div class="right-info">
-                                            <div class="time-enlarged">${item.submitTime || ''}</div>
-                                            
-                                            <div class="commission-text">
-                                                佣金: ¥<span class="value-black">${item.commission || 0}</span>
-                                            </div>
-                                            
-                                            ${checkoutStatusHtml}
-                                            
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <div style="font-size: 16px; font-weight: 700; color: var(--text-color-title);">${item.phone || '未知号码'}</div>
+                                        <div style="font-size: 14px; color: var(--text-color-title); font-weight: 500;">${item.submitTime || ''}</div>
+                                    </div>
+                                    
+                                    <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                                        <div style="font-size: 13px; color: var(--text-color-body);">
+                                            佣金: ¥<span class="value-black" style="font-size: 15px; font-weight: 600; color: var(--text-color-title);">${item.commission || 0}</span>
                                         </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div class="detail">需求城市: <span class="value-black">${item.city || '待定'}</span></div>
-                                        <div class="detail">需求地址: <span class="value-black">${item.address || '待定'}</span></div>
+                                    
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                        <div style="font-size: 15px; color: var(--text-color-body);">城市: <span class="value-black">${item.city || '待定'}</span></div>
+                                        ${checkoutStatusHtml}
                                     </div>
+                                    
+                                    <div style="font-size: 15px; color: var(--text-color-body); line-height: 1.5;">地址: <span class="value-black">${item.address || '待定'}</span></div>
                                 </div>
                             `;
                         }).join(''); 
