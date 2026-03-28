@@ -39,12 +39,6 @@
         .main-content { flex: 1; overflow-y: auto; padding: 20px; }
         .bottom-nav { flex-shrink: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
         
-        .status-bar { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600; color: var(--text-color-title); }
-        .status-bar .right-icons { display: flex; gap: 5px; align-items: center; }
-        .status-bar-icon { width: 16px; height: 16px; }
-        .status-signal { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 12V16.7L22 18.7V12H20M12 11V14.7L14 16.7V11H12M8 10V13.7L10 15.7V10H8M16 11.7L18 13.7V12H16M4 8.7L6 10.7V9H4' fill='%23000'/%3E%3C/svg%3E"); }
-        .status-wifi { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3C7.3 3 3.1 4.7.1 7.6L12 21 23.9 7.6C20.9 4.7 16.7 3 12 3M21.1 8.8C18.6 6.4 15.4 5 12 5S5.4 6.4 2.9 8.8L12 19.3 21.1 8.8Z' fill='%23000'/%3E%3C/svg%3E"); }
-        .status-battery { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M17 6V4H7V6C5.9 6 5 6.9 5 8V18C5 19.1 5.9 20 7 20H17C18.1 20 19 19.1 19 18V8C19 6.9 18.1 6 17 6M17 18H7V8H17V18M11 10H13V12H15V14H13V16H11V14H9V12H11V10Z' fill='%23000'/%3E%3C/svg%3E"); }
         .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-color-title); margin-bottom: 20px; }
         .value-black { color: var(--text-color-title); }
         .needs-summary { margin-bottom: 15px; font-size: 14px; color: var(--text-color-body); }
@@ -57,7 +51,7 @@
         .card-header .time-enlarged { font-size: 14px; color: var(--text-color-title); font-weight: 500; margin-bottom: 4px; }
         .card-header .commission-text { font-size: 13px; color: var(--text-color-body); }
         .card-header .commission-text .value-black { font-size: 15px; font-weight: 600; color: var(--text-color-title); }
-        .card-body { margin-top: 15px; } 
+        .card-body { margin-top: 9px; } 
         .card-body .detail { font-size: 15px; color: var(--text-color-body); line-height: 1.6; margin-bottom: 3px; }
         .nav-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color-body); cursor: pointer; }
         .nav-icon { width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain; background-position: center; margin-bottom: 4px; }
@@ -76,16 +70,7 @@
 </head>
 <body>
     <div class="app-viewport">
-        <div class="status-bar">
-            <div class="time">9:41</div>
-            <div class="right-icons">
-                <div class="status-bar-icon status-signal"></div>
-                <div class="status-bar-icon status-wifi"></div>
-                <div class="status-bar-icon status-battery"></div>
-            </div>
-        </div>
-
-        <div class="main-content">
+       <div class="main-content">
             <div id="page-needs-list" class="page active">
                 <div class="page-header">
                     <h1>需求列表</h1>
