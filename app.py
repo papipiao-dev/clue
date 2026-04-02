@@ -85,10 +85,10 @@ def clues():
                 if not phone or len(phone) != 11:
                     return jsonify({'code': 400, 'message': '手机号格式不正确'})
 
-                # 插入数据，默认 status 为 0 (表示无需求)
+                # 插入数据，默认 status 为 0 (表示无需求)，type 为 0 (自主提报), is_checkout 默认为 0
                 sql = """
-                    INSERT INTO biz_clue (user_id, phone, status, type, create_time) 
-                    VALUES (%s, %s, 0, '自主提交', %s)
+                    INSERT INTO biz_clue (user_id, phone, status, type, is_checkout, create_time) 
+                    VALUES (%s, %s, 0, 0, 0, %s)
                 """
                 cursor.execute(sql, (user_id, phone, datetime.datetime.now()))
                 conn.commit()
@@ -105,17 +105,54 @@ def clues():
                 cursor.execute(sql, (user_id,))
                 rows = cursor.fetchall()
                 
+                # 类型映射字典（兼顾老数据的 '自主提交' 和新设定的 0, 1）
+                type_map = {0: '自主提报', '0': '自主提报', 1: '报器价', '1': '报器价', '自主提交': '自主提报'}
+
                 # 格式化数据以匹配前端展示
                 formatted_data = []
                 for row in rows:
+                    # 翻译数据库存储的值到前端显示文本
+                    mapped_type = type_map.get(row['type'], str(row['type']))
+                    
                     formatted_data.append({
                         'phone': row['phone'],
-                        'type': row['type'],
+                        'type': mapped_type,
                         'status': '无需求', # 强制返回无需求
                         'submitTime': row['create_time'].strftime('%Y-%m-%d %H:%M:%S') if row['create_time'] else ''
                     })
                     
                 return jsonify({'code': 200, 'data': formatted_data})
+    finally:
+        conn.close()
+
+# ==========================================
+# 2.5 报价器专属提报接口
+# ==========================================
+@app.route('/api/quotation/submit', methods=['POST'])
+def quotation_submit():
+    data = request.json
+    phone = data.get('phone')
+    user_id = data.get('user_id')  # 从分享链接中带过来的分享人ID
+
+    if not phone or len(phone) != 11:
+        return jsonify({'code': 400, 'message': '手机号格式不正确'})
+    if not user_id:
+        return jsonify({'code': 400, 'message': '缺少分享人信息'})
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cursor:
+            # 插入数据，type 为 1 (报器价), is_checkout为0
+            sql = """
+                INSERT INTO biz_clue 
+                (user_id, phone, status, type, is_checkout, create_time) 
+                VALUES (%s, %s, 0, 1, 0, %s)
+            """
+            cursor.execute(sql, (user_id, phone, datetime.datetime.now()))
+            conn.commit()
+            return jsonify({'code': 200, 'message': '提交成功'})
+    except Exception as e:
+        return jsonify({'code': 500, 'message': '服务器异常: ' + str(e)})
     finally:
         conn.close()
 

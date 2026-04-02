@@ -46,7 +46,7 @@
             top: 0; 
             background-color: var(--bg-color); 
             z-index: 10; 
-            padding-top: 20px; /* 【修复点1】由30px改为20px，与其他页面高度完全一致 */
+            padding-top: 20px; 
             padding-bottom: 10px; 
             margin-bottom: 14px; 
         }
@@ -67,13 +67,11 @@
 
         .link-label { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 12px; }
         
-        /* 【修复点2：新增】父容器设为 relative，方便 toast 定位 */
         .link-input-wrapper { position: relative; display: flex; justify-content: space-between; align-items: center; background-color: #F3F8F5; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; border: 1px solid #E9F2ED; }
         
         .link-text { font-size: 15px; color: #333; font-family: monospace; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; margin-right: 10px; }
         .link-icon-svg { width: 20px; height: 20px; flex-shrink: 0; color: #555; }
         
-        /* 【修复点2：新增】Toast 的 CSS 样式 */
         .toast-copy {
             position: absolute;
             top: 50%;
@@ -88,7 +86,7 @@
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
-            pointer-events: none; /* 防止遮挡下方点击 */
+            pointer-events: none; 
             z-index: 10;
         }
         .toast-copy.show {
@@ -138,7 +136,7 @@
                     <div class="link-label">专属推广链接</div>
                     
                     <div class="link-input-wrapper">
-                        <div class="link-text" id="short-link-text">https://adbadfjlsf.co...</div>
+                        <div class="link-text" id="short-link-text">生成中...</div>
                         <svg class="link-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -207,9 +205,14 @@
             return;
         }
 
-        // --- 2. 复制功能逻辑 ---
-        const copyBtn = document.getElementById('copy-btn');
+        // --- 2. 动态生成带 UID 的报价器链接 ---
         const linkTextElement = document.getElementById('short-link-text');
+        // 根据您的公网IP和端口生成专属链接
+        const myLink = `http://150.158.82.114:8888/quotation/index.html?uid=${userToken}`;
+        linkTextElement.innerText = myLink;
+
+        // --- 3. 复制功能逻辑 ---
+        const copyBtn = document.getElementById('copy-btn');
         const toastMessage = document.getElementById('toast-message'); // 获取Toast元素
         
         let toastTimer; 
@@ -217,16 +220,12 @@
         copyBtn.addEventListener('click', async () => {
             const textToCopy = linkTextElement.innerText;
             
-            // 【修复点2：新增】HTTP 降级方案，避免 HTTP 环境下触发浏览器的原生错误 alert
             try {
                 if (navigator.clipboard && window.isSecureContext) {
-                    // 如果在 HTTPS 或 localhost 环境下
                     await navigator.clipboard.writeText(textToCopy);
                 } else {
-                    // 如果在 HTTP 访问（IP 直接访问），使用旧版 API 做兼容
                     let textArea = document.createElement("textarea");
                     textArea.value = textToCopy;
-                    // 防止唤起键盘或页面滚动
                     textArea.style.position = "fixed";
                     textArea.style.left = "-999999px";
                     textArea.style.top = "-999999px";
@@ -238,7 +237,6 @@
                 }
             } catch (err) {
                 console.error('自动复制执行异常:', err);
-                // 即使极少数机型失败，我们也不主动弹恶心的原生 alert 了，直接走 UI 流程
             }
             
             // 弹出 “复制成功” Toast
