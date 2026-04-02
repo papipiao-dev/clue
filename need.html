@@ -36,10 +36,23 @@
         /* 修复底部被遮挡的核心 CSS */
         .app-viewport { width: 100vw; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-color); position: relative;}
         @supports (height: 100dvh) { .app-viewport { height: 100dvh; } }
-        .main-content { flex: 1; overflow-y: auto; padding: 20px; }
+        
+        /* 把 padding-top 改为 0，移交给吸顶元素 */
+        .main-content { flex: 1; overflow-y: auto; padding: 0 20px 20px 20px; }
         .bottom-nav { flex-shrink: 0; width: 100%; height: 60px; background-color: var(--card-bg); border-top: 1px solid #EEEEEE; display: flex; justify-content: space-around; align-items: center; padding: 0 10px; padding-bottom: env(safe-area-inset-bottom); z-index: 100; }
         
-        .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-color-title); margin-bottom: 20px; }
+        /* 新增吸顶属性 */
+        .page-header {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+            z-index: 10;
+            padding-top: 20px;
+            padding-bottom: 10px;
+        }
+        .page-header h1 { font-size: 28px; font-weight: 700; color: var(--text-color-title); margin-bottom: 10px; }
+        
         .value-black { color: var(--text-color-title); }
         .needs-summary { margin-bottom: 15px; font-size: 14px; color: var(--text-color-body); }
         .needs-summary span { font-weight: 700; color: var(--text-color-title); }
@@ -74,8 +87,9 @@
             <div id="page-needs-list" class="page active">
                 <div class="page-header">
                     <h1>需求列表</h1>
+                    <div class="needs-summary" id="needs-summary-container"></div>
                 </div>
-                <div class="needs-summary" id="needs-summary-container"></div>
+                
                 <div class="card-list" id="needs-list-container">
                     <div class="loading-text">数据加载中...</div>
                 </div>
@@ -93,7 +107,7 @@
             </div>
             <div class="nav-item nav-item-short-link" onclick="window.location.href='shortlink.html'">
                 <div class="nav-icon"></div>
-                <div class="nav-text">我的短链</div>
+                <div class="nav-text">我的分享</div>
             </div>
         </nav>
     </div>
