@@ -208,7 +208,8 @@
         // --- 2. 动态生成带 UID 的报价器链接 ---
         const linkTextElement = document.getElementById('short-link-text');
         // 根据您的公网IP和端口生成专属链接
-        const myLink = `http://150.158.82.114:8888/quotation/index.html?uid=${userToken}`;
+        // 暂时可以先替换成你的线索系统域名，或者未来报价器单独的域名
+        const myLink = `http://clue.shzdi.cn/quotation/index.html?uid=${userToken}`;
         linkTextElement.innerText = myLink;
 
         // --- 3. 复制功能逻辑 ---
