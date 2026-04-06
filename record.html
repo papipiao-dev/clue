@@ -127,6 +127,19 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" id="agreement-modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-box">
+                <div class="modal-title">温馨提示</div>
+                <div style="font-size: 14px; color: var(--text-color-body); text-align: center; margin-bottom: 24px;">
+                    已阅读并同意<span style="color: var(--primary-color);">《用户协议》</span>和<span style="color: var(--primary-color);">《隐私协议》</span>
+                </div>
+                <div class="modal-actions" style="justify-content: center;">
+                    <button class="modal-btn modal-btn-confirm" id="agreement-confirm-btn" style="width: 100%;">确认</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -139,6 +152,21 @@
                 window.location.href = 'login.html';
                 return; 
             }
+
+            // 新增协议弹窗逻辑
+            const agreementModal = document.getElementById('agreement-modal');
+            const agreementConfirmBtn = document.getElementById('agreement-confirm-btn');
+            
+            // 如果没有点击过确认，则展示弹窗
+            if (!localStorage.getItem('agreed_privacy')) {
+                agreementModal.classList.add('active');
+            }
+
+            // 点击确认后隐藏弹窗并保存状态
+            agreementConfirmBtn.addEventListener('click', () => {
+                localStorage.setItem('agreed_privacy', 'true');
+                agreementModal.classList.remove('active');
+            });
 
             loadCluesData();
 
