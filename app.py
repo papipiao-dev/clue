@@ -21,7 +21,7 @@ DB_CONFIG = {
     'host': '127.0.0.1',
     'port': 3306,
     'user': 'root',
-    'password': '',          # 注意：这里千万不要填空格，就是两个单引号！
+    'password': 'SMT2010_hm',          # 注意：这里千万不要填空格，就是两个单引号！
     'database': 'clue_db',   # 刚才创建的数据库名字
     'charset': 'utf8mb4',
     'cursorclass': pymysql.cursors.DictCursor
