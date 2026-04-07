@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pymysql
 import datetime
+import requests
 
 # 将当前文件夹(.)设为静态网页目录
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -92,6 +93,15 @@ def clues():
                 """
                 cursor.execute(sql, (user_id, phone, datetime.datetime.now()))
                 conn.commit()
+
+                # ====== 新增：微信推送提醒 ======
+                try:
+                    msg = f"收到新线索！来源：自主提报，手机号：{phone}"
+                    requests.get(f"https://wxpusher.zjiecode.com/api/send/message/SPT_KqmpxyTR6jiGmVZPrTBMB99Fml45/{msg}", timeout=3)
+                except Exception as e:
+                    print("推送失败", e)
+                # ==============================
+
                 return jsonify({'code': 200, 'message': '添加成功'})
 
             elif request.method == 'GET':
@@ -150,6 +160,15 @@ def quotation_submit():
             """
             cursor.execute(sql, (user_id, phone, datetime.datetime.now()))
             conn.commit()
+
+            # ====== 新增：微信推送提醒 ======
+            try:
+                msg = f"收到新线索！来源：报价器，手机号：{phone}"
+                requests.get(f"https://wxpusher.zjiecode.com/api/send/message/SPT_KqmpxyTR6jiGmVZPrTBMB99Fml45/{msg}", timeout=3)
+            except Exception as e:
+                print("推送失败", e)
+            # ==============================
+
             return jsonify({'code': 200, 'message': '提交成功'})
     except Exception as e:
         return jsonify({'code': 500, 'message': '服务器异常: ' + str(e)})
