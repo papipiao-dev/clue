@@ -3,6 +3,7 @@ from flask_cors import CORS
 import pymysql
 import datetime
 import requests
+import urllib.parse
 
 # 将当前文件夹(.)设为静态网页目录
 app = Flask(__name__, static_folder='.', static_url_path='')
@@ -97,9 +98,13 @@ def clues():
                 # ====== 新增：微信推送提醒 ======
                 try:
                     msg = f"收到新线索！来源：自主提报，手机号：{phone}"
-                    requests.get(f"https://wxpusher.zjiecode.com/api/send/message/SPT_KqmpxyTR6jiGmVZPrTBMB99Fml45/{msg}", timeout=3)
+                    # 对包含中文和全角符号的消息进行 URL 编码
+                    encoded_msg = urllib.parse.quote(msg)
+                    response = requests.get(f"https://wxpusher.zjiecode.com/api/send/message/SPT_KqmpxyTR6jiGmVZPrTBMB99Fml45/{encoded_msg}", timeout=5)
+                    # 打印真实返回结果，排查具体原因
+                    print(f"WxPusher 自主提报返回: {response.text}")
                 except Exception as e:
-                    print("推送失败", e)
+                    print("WxPusher 网络请求执行异常:", e)
                 # ==============================
 
                 return jsonify({'code': 200, 'message': '添加成功'})
@@ -164,9 +169,13 @@ def quotation_submit():
             # ====== 新增：微信推送提醒 ======
             try:
                 msg = f"收到新线索！来源：报价器，手机号：{phone}"
-                requests.get(f"https://wxpusher.zjiecode.com/api/send/message/SPT_KqmpxyTR6jiGmVZPrTBMB99Fml45/{msg}", timeout=3)
+                # 对包含中文和全角符号的消息进行 URL 编码
+                encoded_msg = urllib.parse.quote(msg)
+                response = requests.get(f"https://wxpusher.zjiecode.com/api/send/message/SPT_KqmpxyTR6jiGmVZPrTBMB99Fml45/{encoded_msg}", timeout=5)
+                # 打印真实返回结果，排查具体原因
+                print(f"WxPusher 报价器提报返回: {response.text}")
             except Exception as e:
-                print("推送失败", e)
+                print("WxPusher 网络请求执行异常:", e)
             # ==============================
 
             return jsonify({'code': 200, 'message': '提交成功'})
